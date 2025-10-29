@@ -1,0 +1,18 @@
+{
+  "$schema": "/Volumes/Data/AI/precise/schema.json",
+  "options": {
+    "debug": true,
+    "debug_lsp": true
+  },
+  "mcp": {
+    "angular-cli": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@angular/cli",
+        "mcp"
+      ]
+    }
+  }
+}
