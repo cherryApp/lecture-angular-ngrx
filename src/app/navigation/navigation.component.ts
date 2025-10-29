@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
@@ -11,6 +11,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
             <div class="flex-shrink-0 flex items-center">
               <span class="text-white font-bold text-xl">My App</span>
             </div>
+            <!-- Desktop menu -->
             <div class="hidden sm:block sm:ml-6">
               <div class="flex space-x-4">
                 <a routerLink="/" routerLinkActive="bg-gray-900" 
@@ -24,6 +25,40 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
               </div>
             </div>
           </div>
+          <!-- Mobile menu button -->
+          <div class="absolute inset-y-0 right-0 flex items-center sm:hidden">
+            <button 
+              (click)="toggleMenu()"
+              type="button"
+              class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none"
+              aria-controls="mobile-menu"
+              [attr.aria-expanded]="isMenuOpen()"
+              aria-expanded="false">
+              <span class="sr-only">Open main menu</span>
+              <!-- Hamburger icon -->
+              <svg [class.hidden]="isMenuOpen()" class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+              <!-- Close icon -->
+              <svg [class.hidden]="!isMenuOpen()" class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile menu -->
+      <div [class.hidden]="!isMenuOpen()" class="sm:hidden" id="mobile-menu">
+        <div class="px-2 pt-2 pb-3 space-y-1">
+          <a routerLink="/" (click)="toggleMenu()" routerLinkActive="bg-gray-900" 
+             class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">
+            Home
+          </a>
+          <a routerLink="/users" (click)="toggleMenu()" routerLinkActive="bg-gray-900" 
+             class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">
+            Users
+          </a>
         </div>
       </div>
     </nav>
@@ -31,4 +66,10 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   standalone: true,
   imports: [RouterLink, RouterLinkActive]
 })
-export class NavigationComponent {}
+export class NavigationComponent {
+  isMenuOpen = signal(false);
+
+  toggleMenu() {
+    this.isMenuOpen.update(value => !value);
+  }
+}
