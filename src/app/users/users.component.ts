@@ -1,0 +1,76 @@
+import { Component, inject, OnInit } from '@angular/core';
+import { UserStore } from '../stores/user.store';
+import { User } from '../model/user';
+import { NgClass } from '@angular/common';
+
+@Component({
+  selector: 'app-users',
+  template: `
+    <div class="p-6">
+      <h1 class="text-2xl font-bold mb-4">Users</h1>
+      
+      <!-- Loading indicator -->
+      @if (userStore.loading()) {
+        <div class="flex justify-center items-center h-32">
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+        </div>
+      }
+      
+      <!-- Users table -->
+      @if (!userStore.loading()) {
+        <div class="overflow-x-auto">
+          <table class="min-w-full bg-white border border-gray-200">
+            <thead>
+              <tr class="bg-gray-100">
+                <th class="py-2 px-4 border-b text-left">ID</th>
+                <th class="py-2 px-4 border-b text-left">Name</th>
+                <th class="py-2 px-4 border-b text-left">Email</th>
+                <th class="py-2 px-4 border-b text-left">Category</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (user of userStore.users(); track user.id) {
+                <tr class="hover:bg-gray-50">
+                  <td class="py-2 px-4 border-b">{{ user.id }}</td>
+                  <td class="py-2 px-4 border-b">{{ user.name }}</td>
+                  <td class="py-2 px-4 border-b">{{ user.email }}</td>
+                  <td class="py-2 px-4 border-b">
+                    <span class="px-2 py-1 rounded-full text-xs font-medium" 
+                          [ngClass]="{
+                            'bg-blue-100 text-blue-800': user.category === 'Admin',
+                            'bg-green-100 text-green-800': user.category === 'User',
+                            'bg-purple-100 text-purple-800': user.category === 'Moderator'
+                          }">
+                      {{ user.category }}
+                    </span>
+                  </td>
+                </tr>
+              }
+              @empty {
+                <tr>
+                  <td colspan="4" class="py-4 px-4 text-center text-gray-500">
+                    No users found
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+      
+      <!-- User count -->
+      <div class="mt-4 text-sm text-gray-600">
+        Total users: {{ userStore.userCount() }}
+      </div>
+    </div>
+  `,
+  standalone: true,
+  imports: [NgClass]
+})
+export class UsersComponent implements OnInit {
+  userStore = inject(UserStore);
+  
+  ngOnInit() {
+    this.userStore.loadUsers();
+  }
+}
