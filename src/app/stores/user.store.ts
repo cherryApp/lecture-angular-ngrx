@@ -1,7 +1,7 @@
 import { signalStore, withState, withMethods, withComputed, patchState } from '@ngrx/signals';
 import { User } from '../model/user';
 import { UserService } from '../services/user.service';
-import { inject } from '@angular/core';
+import { Inject, inject, Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 
 export interface UserState {
@@ -11,10 +11,11 @@ export interface UserState {
 }
 
 export const UserStore = signalStore(
+  { providedIn: 'root' },
   withState<UserState>({
     users: [],
     loading: false,
-    selectedUser: null
+    selectedUser: null,
   }),
   withMethods((store, userService = inject(UserService)) => ({
     // Load all users from the API
@@ -28,43 +29,43 @@ export const UserStore = signalStore(
         throw error;
       }
     },
-    
+
     // Create a new user
     async createUser(user: Omit<User, 'id'>) {
       const newUser = await firstValueFrom(userService.createUser(user));
       patchState(store, { users: [...store.users(), newUser] });
       return newUser;
     },
-    
+
     // Update an existing user
     async updateUser(id: number, user: Partial<User>) {
       const updatedUser = await firstValueFrom(userService.updateUser(id, user));
-      patchState(store, { 
-        users: store.users().map(u => u.id === id ? updatedUser : u),
-        selectedUser: updatedUser
+      patchState(store, {
+        users: store.users().map((u) => (u.id === id ? updatedUser : u)),
+        selectedUser: updatedUser,
       });
       return updatedUser;
     },
-    
+
     // Remove a user
     async removeUser(id: number) {
       await firstValueFrom(userService.deleteUser(id));
-      patchState(store, { 
-        users: store.users().filter(user => user.id !== id),
-        selectedUser: store.selectedUser()?.id === id ? null : store.selectedUser()
+      patchState(store, {
+        users: store.users().filter((user) => user.id !== id),
+        selectedUser: store.selectedUser()?.id === id ? null : store.selectedUser(),
       });
     },
-    
+
     selectUser(user: User | null) {
       patchState(store, { selectedUser: user });
     },
-    
+
     setLoading(loading: boolean) {
       patchState(store, { loading });
-    }
+    },
   })),
   withComputed((store) => ({
     userCount: () => store.users().length,
-    hasUsers: () => store.users().length > 0
+    hasUsers: () => store.users().length > 0,
   }))
 );

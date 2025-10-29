@@ -68,7 +68,7 @@ import { NgClass } from '@angular/common';
   imports: [NgClass]
 })
 export class UsersComponent implements OnInit {
-  userStore = inject(UserStore);
+  readonly userStore = inject(UserStore);
   
   ngOnInit() {
     this.userStore.loadUsers();
