@@ -20,6 +20,11 @@ export const UserStore = signalStore(
   withMethods((store, userService = inject(UserService)) => ({
     // Load all users from the API
     async loadUsers() {
+      // If users are already loaded, don't reload them
+      if (store.users().length > 0) {
+        return;
+      }
+      
       patchState(store, { loading: true });
       try {
         const users = await firstValueFrom(userService.getUsers());
