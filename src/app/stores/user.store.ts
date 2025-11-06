@@ -61,6 +61,31 @@ export const UserStore = signalStore(
       });
     },
 
+    // Load a single user by ID
+    async loadUser(id: number) {
+      // Check if user is already in the store
+      const existingUser = store.users().find(user => user.id === id);
+      if (existingUser) {
+        patchState(store, { selectedUser: existingUser });
+        return existingUser;
+      }
+      
+      // Otherwise fetch from API
+      patchState(store, { loading: true });
+      try {
+        const user = await firstValueFrom(userService.getUser(id));
+        patchState(store, { 
+          users: [...store.users(), user],
+          selectedUser: user,
+          loading: false 
+        });
+        return user;
+      } catch (error) {
+        patchState(store, { loading: false });
+        throw error;
+      }
+    },
+
     selectUser(user: User | null) {
       patchState(store, { selectedUser: user });
     },

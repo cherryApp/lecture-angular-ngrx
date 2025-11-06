@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { UserStore } from '../stores/user.store';
 import { User } from '../model/user';
 import { NgClass } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-users',
@@ -26,6 +27,7 @@ import { NgClass } from '@angular/common';
                 <th class="py-2 px-4 border-b text-left">Name</th>
                 <th class="py-2 px-4 border-b text-left">Email</th>
                 <th class="py-2 px-4 border-b text-left">Category</th>
+                <th class="py-2 px-4 border-b text-left">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -44,11 +46,17 @@ import { NgClass } from '@angular/common';
                       {{ user.category }}
                     </span>
                   </td>
+                  <td class="py-2 px-4 border-b">
+                    <a [routerLink]="['/users/edit', user.id]" 
+                       class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded text-sm focus:outline-none focus:shadow-outline">
+                      Edit
+                    </a>
+                  </td>
                 </tr>
               }
               @empty {
                 <tr>
-                  <td colspan="4" class="py-4 px-4 text-center text-gray-500">
+                  <td colspan="5" class="py-4 px-4 text-center text-gray-500">
                     No users found
                   </td>
                 </tr>
@@ -65,7 +73,7 @@ import { NgClass } from '@angular/common';
     </div>
   `,
   standalone: true,
-  imports: [NgClass]
+  imports: [NgClass, RouterLink]
 })
 export class UsersComponent implements OnInit {
   readonly userStore = inject(UserStore);
