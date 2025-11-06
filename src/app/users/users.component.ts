@@ -8,7 +8,13 @@ import { RouterLink } from '@angular/router';
   selector: 'app-users',
   template: `
     <div class="p-6">
-      <h1 class="text-2xl font-bold mb-4">Users</h1>
+      <div class="flex justify-between items-center mb-4">
+        <h1 class="text-2xl font-bold">Users</h1>
+        <a routerLink="/users/create" 
+           class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+          Create User
+        </a>
+      </div>
       
       <!-- Loading indicator -->
       @if (userStore.loading()) {
