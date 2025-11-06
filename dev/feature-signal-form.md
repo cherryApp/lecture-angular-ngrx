@@ -10,3 +10,4 @@
 - Use the user.store to get and update users, add missing fields for selected user
 - Keep the coding standards
 - Follow the application architecture
+- Update the existing content in the component and use the signal form instead of the reactive form
